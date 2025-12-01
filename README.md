@@ -1,4 +1,7 @@
 # EcoChef
+<div style="text-align: center;">
+    <img src="/images/ecochef.jpg" alt="EcoChef Agent Architecture Diagram" style="width: 80%;"/>
+</div>
 The problem I want to solve is the food waste on the daily basis and try to improve persons in a precarious situation meal planning. The most useful case is for me people that live alone that has leftovers in their fridge and a tiny budget.
 
 For me it's an important problem to solve because I saw my friends living by themselves during their studies sometimes struggle to eat various meal or throwing away food that is passed. Furthermore, reducing food waste allows to improve our ecological print and even feed homeless people.
@@ -22,4 +25,6 @@ Second agent will use google search tool to find a recipe that includes our left
 
 After that we'll have 3 pipelines: one to construct the leftovers list, one to decompose the steps and one that will look up for nutrients that are in the meal and the daily need for an average man. We will recover each of the output in a defined format to display the information correctly on the front-end.
 
-![Agent Architecture](./images/app_architecture.png)
+<div style="text-align: center;">
+    <img src="/images/app_architecture.png" alt="EcoChef Agent Architecture Diagram" style="width: 80%;"/>
+</div>
