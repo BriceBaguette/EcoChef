@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EcoChef - Zero Waste Cooking</title>
+    <!-- Tailwind CSS for Modern Styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        body { font-family: 'Poppins', sans-serif; }
+        .fade-in { animation: fadeIn 0.5s ease-in; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col">
+
+    <!-- Navbar -->
+    <nav class="bg-emerald-600 text-white p-4 shadow-lg">
+        <div class="container mx-auto flex justify-between items-center">
+            <h1 class="text-2xl font-bold flex items-center gap-2">
+                <i class="fa-solid fa-leaf"></i> EcoChef
+            </h1>
+            <span class="text-sm opacity-90">Reduce Waste. Eat Well.</span>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-8 flex-grow">
+        
+        <!-- Hero & Input Section -->
+        <section class="max-w-2xl mx-auto bg-white p-8 rounded-2xl shadow-xl border border-slate-100 mb-8">
+            <h2 class="text-3xl font-bold text-center mb-2 text-slate-700">What's in your fridge?</h2>
+            <p class="text-center text-slate-500 mb-6">List your leftovers and expiration risks. We'll build a meal.</p>
+            
+            <div class="relative">
+                <textarea id="leftoversInput" 
+                    class="w-full p-4 border-2 border-slate-200 rounded-xl focus:border-emerald-500 focus:ring-4 focus:ring-emerald-100 outline-none transition h-32 resize-none"
+                    placeholder="e.g., Half a roasted chicken, stale bread, slightly wilted spinach..."></textarea>
+            </div>
+
+            <button onclick="generateRecipe()" id="submitBtn" 
+                class="w-full mt-4 bg-emerald-600 hover:bg-emerald-800 text-white font-bold py-4 rounded-xl shadow-md transform active:scale-95 transition flex justify-center items-center gap-2">
+                <span>Generate Eco-Recipe</span>
+                <i class="fa-solid fa-wand-magic-sparkles"></i>
+            </button>
+        </section>
+
+        <!-- Loading State -->
+        <div id="loader" class="hidden flex-col items-center justify-center py-12">
+            <div class="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-emerald-600 mb-4"></div>
+            <p class="text-slate-600 animate-pulse">Our chef is preparing your meal...</p>
+        </div>
+
+        <!-- Results Grid -->
+        <div id="resultsArea" class="hidden grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 fade-in">
+            
+            <!-- 1. Missing Ingredients (The Extra Items) -->
+            <div class="bg-white p-6 rounded-2xl shadow-md border-l-4 border-orange-400">
+                <h3 class="text-xl font-bold mb-4 flex items-center gap-2">
+                    <i class="fa-solid fa-basket-shopping text-orange-400"></i> Missing Items
+                </h3>
+                <p class="text-sm text-slate-500 mb-3">Buy or find these to complete the meal:</p>
+                <ul id="missingList" class="space-y-2">
+                    <!-- Javascript populates this -->
+                </ul>
+            </div>
+
+            <!-- 2. Recipe Steps -->
+            <div class="bg-white p-6 rounded-2xl shadow-md border-l-4 border-blue-400 lg:col-span-2">
+                <h3 class="text-xl font-bold mb-4 flex items-center gap-2">
+                    <i class="fa-solid fa-fire-burner text-blue-400"></i> 
+                    <span id="recipeTitle">Recipe Steps</span>
+                </h3>
+                <div class="prose prose-slate">
+                    <ol id="stepsList" class="list-decimal list-inside space-y-3 text-slate-700">
+                        <!-- Javascript populates this -->
+                    </ol>
+                </div>
+            </div>
+
+            <!-- 3. Nutritional Data & CSV Download -->
+            <div class="bg-white p-6 rounded-2xl shadow-md border-l-4 border-purple-400 lg:col-span-3">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
+                    <div>
+                        <h3 class="text-xl font-bold flex items-center gap-2">
+                            <i class="fa-solid fa-chart-pie text-purple-400"></i> Nutrition Facts
+                        </h3>
+                        <p class="text-sm text-slate-500">Macro & Micro nutrients per serving</p>
+                    </div>
+                    <button onclick="downloadCSV()" class="mt-4 md:mt-0 bg-slate-800 hover:bg-slate-900 text-white px-6 py-2 rounded-lg text-sm font-semibold flex items-center gap-2 transition">
+                        <i class="fa-solid fa-file-csv"></i> Download Report
+                    </button>
+                </div>
+                
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="bg-slate-100 text-slate-600 text-sm uppercase tracking-wider">
+                                <th class="p-3 rounded-tl-lg">Nutrient</th>
+                                <th class="p-3">Amount</th>
+                                <th class="p-3 rounded-tr-lg">% Daily Value*</th>
+                            </tr>
+                        </thead>
+                        <tbody id="nutritionTable" class="text-slate-700 divide-y divide-slate-100">
+                            <!-- Javascript populates this -->
+                        </tbody>
+                    </table>
+                </div>
+                <p class="text-xs text-slate-400 mt-4 text-right">*Percent Daily Values are based on a 2,000 calorie diet.</p>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-800 text-slate-400 py-6 text-center text-sm">
+        <p>&copy; 2025 EcoChef Initiative. Zero Waste, Full Taste.</p>
+    </footer>
+
+    <!-- Logic Script -->
+    <script>
+        let currentNutritionData = [];
+        let currentRecipeName = "";
+
+        async function generateRecipe() {
+            const leftovers = document.getElementById('leftoversInput').value;
+            const loader = document.getElementById('loader');
+            const resultsArea = document.getElementById('resultsArea');
+
+            if (!leftovers.trim()) {
+                alert("Please enter some ingredients!");
+                return;
+            }
+
+            // UI Reset
+            resultsArea.classList.add('hidden');
+            loader.classList.remove('hidden');
+            loader.classList.add('flex');
+
+            try {
+                const response = await fetch('/api/generate', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ leftovers: leftovers })
+                });
+                
+                const data = await response.json();
+
+                // Populate Data
+                currentRecipeName = data.recipe_name;
+                currentNutritionData = data.nutrition;
+
+                document.getElementById('recipeTitle').innerText = data.recipe_name;
+                
+                // 1. Missing Ingredients
+                const missingList = document.getElementById('missingList');
+                missingList.innerHTML = data.missing_ingredients.map(item => 
+                    `<li class="flex items-center gap-2 bg-orange-50 p-2 rounded text-orange-800 font-medium">
+                        <i class="fa-solid fa-plus text-xs"></i> ${item}
+                    </li>`
+                ).join('');
+
+                // 2. Steps
+                const stepsList = document.getElementById('stepsList');
+                stepsList.innerHTML = data.steps.map(step => 
+                    `<li class="pl-2 border-l-2 border-slate-200">${step}</li>`
+                ).join('');
+
+                // 3. Nutrition
+                const nutritionTable = document.getElementById('nutritionTable');
+                nutritionTable.innerHTML = data.nutrition.map(n => 
+                    `<tr>
+                        <td class="p-3 font-medium">${n.name}</td>
+                        <td class="p-3">${n.amount}</td>
+                        <td class="p-3 text-slate-500">${n.daily_value}</td>
+                    </tr>`
+                ).join('');
+
+                // Show Results
+                loader.classList.add('hidden');
+                loader.classList.remove('flex');
+                resultsArea.classList.remove('hidden');
+
+            } catch (error) {
+                console.error("Error:", error);
+                loader.classList.add('hidden');
+                alert("Something went wrong generating the recipe.");
+            }
+        }
+
+        function downloadCSV() {
+            if (currentNutritionData.length === 0) return;
+
+            // CSV Header
+            let csvContent = "data:text/csv;charset=utf-8,Recipe Name,Nutrient,Amount,Daily Value\n";
+
+            // CSV Rows
+            currentNutritionData.forEach(row => {
+                csvContent += `"${currentRecipeName}","${row.name}","${row.amount}","${row.daily_value}"\n`;
+            });
+
+            // Create Download Link
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", `${currentRecipeName.replace(/\s+/g, '_')}_Nutrition.csv`);
+            document.body.appendChild(link);
+            
+            link.click();
+            document.body.removeChild(link);
+        }
+    </script>
+</body>
+</html>
