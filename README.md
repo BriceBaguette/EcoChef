@@ -22,4 +22,4 @@ Second agent will use google search tool to find a recipe that includes our left
 
 After that we'll have 3 pipelines: one to construct the leftovers list, one to decompose the steps and one that will look up for nutrients that are in the meal and the daily need for an average man. We will recover each of the output in a defined format to display the information correctly on the front-end.
 
-![Agent Architecture](./images/app_architecure.png)
+![Agent Architecture](./images/app_architecture.png)
